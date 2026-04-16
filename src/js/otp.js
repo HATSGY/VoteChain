@@ -7,7 +7,7 @@
 // Replace these values with your own Firebase project credentials.
 // Get them from: Firebase Console → Project Settings → Your apps → Web app
 var firebaseConfig = {
-  apiKey: "AIzaSyD8_igutR7VxVUGa0MFM3SvrXMc1-J2PQI",
+  apiKey: process.env.GOOGLE_API_KEY,
   authDomain: "votechain-a8815.firebaseapp.com",
   projectId: "votechain-a8815",
   storageBucket: "votechain-a8815.firebasestorage.app",
