@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoteChain</title>
+  <link rel="shortcut icon" href="img/vote.svg" type="image/x-icon">
+  <link href="css/landing2.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Arimo&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK — must load before otp.js -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <header>
+    <div id="navbar-custom"></div>
+  </header>
+</head>
+
+<body oncontextmenu="return false;">
+  <div id="nav-placeholder"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       OTP MODAL OVERLAY
+       Covers full screen until phone is verified.
+  ════════════════════════════════════════════════════════════ -->
+  <div id="otp-overlay">
+    <div class="otp-modal">
+
+      <div class="otp-header">
+        <img src="img/eci.png" alt="ECI" style="height:40px; margin-bottom:12px;">
+        <h4 class="otp-title">Voter Identity Verification</h4>
+        <p class="otp-subtitle">Verify your mobile number before casting your vote</p>
+      </div>
+
+      <div class="otp-steps-indicator">
+        <span class="otp-pill active">1. Phone</span>
+        <span class="otp-pill-line"></span>
+        <span class="otp-pill">2. OTP</span>
+        <span class="otp-pill-line"></span>
+        <span class="otp-pill">3. Vote</span>
+      </div>
+
+      <div id="otp-error" class="otp-msg otp-msg-error" style="display:none;"></div>
+      <div id="otp-success-msg" class="otp-msg otp-msg-success" style="display:none;"></div>
+
+      <!-- Step: Phone Entry -->
+      <div id="otp-step-phone-entry">
+        <label class="otp-label">Mobile Number</label>
+        <div class="otp-phone-row">
+          <select id="otp-country-code" class="otp-cc-select">
+            <option value="+91">+91 India</option>
+            <option value="+1">+1 US</option>
+            <option value="+44">+44 UK</option>
+            <option value="+61">+61 AU</option>
+            <option value="+971">+971 UAE</option>
+          </select>
+          <input type="tel" id="otp-phone" class="otp-phone-input"
+            placeholder="98765 43210" maxlength="10"
+            oninput="this.value=this.value.replace(/\D/g,'')"
+            onkeydown="if(event.key==='Enter') OTP.sendOTP()" />
+        </div>
+        <div id="otp-recaptcha"></div>
+        <button class="otp-btn otp-btn-primary" onclick="OTP.sendOTP()">Send OTP &rarr;</button>
+        <p class="otp-fine-print">A one-time password will be sent to your mobile via SMS.</p>
+      </div>
+
+      <!-- Step: Sending -->
+      <div id="otp-step-sending" style="display:none; text-align:center; padding:30px 0;">
+        <div class="otp-spinner"></div>
+        <p style="margin-top:16px; color:#555;">Sending OTP&hellip;</p>
+      </div>
+
+      <!-- Step: Enter OTP -->
+      <div id="otp-step-enter-otp" style="display:none;">
+        <label class="otp-label">Enter 6-Digit OTP</label>
+        <div class="otp-digits-row" onpaste="OTP.handlePaste(event)">
+          <input class="otp-digit" id="otp-d1" maxlength="1" inputmode="numeric"
+            onkeyup="OTP.handleDigitInput('otp-d1','otp-d2',null,event)" />
+          <input class="otp-digit" id="otp-d2" maxlength="1" inputmode="numeric"
+            onkeyup="OTP.handleDigitInput('otp-d2','otp-d3','otp-d1',event)" />
+          <input class="otp-digit" id="otp-d3" maxlength="1" inputmode="numeric"
+            onkeyup="OTP.handleDigitInput('otp-d3','otp-d4','otp-d2',event)" />
+          <input class="otp-digit" id="otp-d4" maxlength="1" inputmode="numeric"
+            onkeyup="OTP.handleDigitInput('otp-d4','otp-d5','otp-d3',event)" />
+          <input class="otp-digit" id="otp-d5" maxlength="1" inputmode="numeric"
+            onkeyup="OTP.handleDigitInput('otp-d5','otp-d6','otp-d4',event)" />
+          <input class="otp-digit" id="otp-d6" maxlength="1" inputmode="numeric"
+            onkeyup="OTP.handleDigitInput('otp-d6',null,'otp-d5',event)" />
+        </div>
+        <button class="otp-btn otp-btn-primary" onclick="OTP.verifyOTP()">Verify OTP &#10003;</button>
+        <div style="text-align:center; margin-top:12px;">
+          <span id="otp-timer" style="font-size:13px; color:#888;"></span>
+          <button id="otp-resend-btn" class="otp-btn-link" onclick="OTP.resend()" style="display:none;">Resend OTP</button>
+        </div>
+        <button class="otp-btn otp-btn-ghost" onclick="OTP.resend()">&larr; Change Number</button>
+      </div>
+
+      <!-- Step: Verifying -->
+      <div id="otp-step-verifying" style="display:none; text-align:center; padding:30px 0;">
+        <div class="otp-spinner"></div>
+        <p style="margin-top:16px; color:#555;">Verifying OTP&hellip;</p>
+      </div>
+
+      <!-- Step: Success -->
+      <div id="otp-step-success" style="display:none; text-align:center; padding:30px 0;">
+        <div class="otp-success-icon">&#10003;</div>
+        <h5 style="margin-top:16px; font-weight:700; color:#1a7f4e;">Phone Verified!</h5>
+        <p style="color:#555; font-size:14px;">Redirecting to voting page&hellip;</p>
+      </div>
+
+    </div>
+  </div>
+  <!-- ═══════════════════════════════════════════════════════════ END OTP MODAL -->
+
+
+  <!-- Original loader (unchanged) -->
+  <div class="row" class="align-middle">
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <div id="loader" class="text-center align-middle">
+        <div class="spinner-border text-info" role="status">
+          <span class="sr-only ">Loading Please Wait...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Original content (unchanged except for verified badge) -->
+  <div id="content" style="display: none;">
+    <div class="container" id="votingPage">
+      <div class="row" id="check-web3" style="margin-top: 30px;"></div>
+      <div class="row">
+        <div class="col-lg-6 col-sm-12">
+          <img src="https://d30i16bbj53pdg.cloudfront.net/wp-content/uploads/2018/10/vote-for-blog.jpg" width="500px" height="400px" alt=" votingPage">
+        </div>
+        <div class="col-lg-6 col-sm-12">
+          <div>
+            <!-- OTP verified phone badge (hidden until OTP success) -->
+            <div id="otp-verified-badge" class="otp-verified-badge" style="display:none;"></div>
+
+            <table class="table table-responsive table-borderless">
+              <thead>
+                <tr>
+                  <th style="color: whitesmoke;">Sno</th>
+                  <th style="color: whitesmoke;">Candidate </th>
+                  <th style="color: whitesmoke;">Party of Candidate</th>
+                  <th style="color: whitesmoke;">Votes</th>
+                </tr>
+              </thead>
+              <tbody id="candidatesResults" style="color: whitesmoke;"></tbody>
+            </table>
+            <hr />
+            <form onSubmit="App.castVote(); return false;">
+              <div class="form-group" style="color: whitesmoke;">
+                <label for="candidatesSelect">Select Your Candidate to Vote</label>
+                <select class="form-control" id="candidatesSelect"></select>
+              </div>
+              <button type="submit" class="btn btn-primary btn-success center-block">Vote</button>
+              <hr />
+            </form>
+            <p id="accountAddress" class="text-center"></p>
+          </div>
+        </div>
+      </div><br>
+      <div class="row" id="vote-msg" style="margin-top: 30px;"></div>
+    </div>
+  </div>
+
+  <script src="js/navbar.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      if (typeof web3 !== 'undefined') {
+        if (web3.currentProvider.isMetaMask === true) {
+          console.log('MetaMask is active')
+        } else {
+          $('#check-web3').html(`<div class="alert alert-danger text-center" role="alert">
+            <span>Please Install Metamask for voting</span>
+          </div>`)
+        }
+      } else {
+        console.log('web3 is not found')
+      }
+    })
+  </script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <!-- otp.js must come before app.js -->
+  <script src="js/otp.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Show OTP modal as soon as page loads -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      OTP.showModal();
+      OTP.showStep("phone-entry");
+    });
+  </script>
+
+</body>
+</html>
