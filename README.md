@@ -6,7 +6,7 @@
 <br>A Decentralized e-Voting Portal based on Ethereum Blockchain. 
 
 ## About
-This is a Blockchain-based project, made by me [[Anmol Singh Yadav](https://www.linkedin.com/in/anmolsinghyadav/)] as a semester project in Vellore Institute of Technology. This projet is entirely based on Ethereum Blockchain with Web3Js to link it with HTML. Blockchain Technology is yet very hard to be hacked [ Until You have committed mistakes in Protocols or Coding Part ] that is what allows implementation of Blockchain in the Voting System. Once Blockchain is introduced in the Voting System, no one can put question on it's integrity. Thus, an inititative, of switching our voting system on Blockchain must be done by Government.
+This is a Blockchain-based project, made by me [[Arya Rajesh Mhatre, Pratik Mane, Gajanan More , Pratyush Chaudhari]] as a semester project in A.C. Patil College of Engineering. This projet is entirely based on Ethereum Blockchain with Web3Js to link it with HTML. Blockchain Technology is yet very hard to be hacked [ Until You have committed mistakes in Protocols or Coding Part ] that is what allows implementation of Blockchain in the Voting System. Once Blockchain is introduced in the Voting System, no one can put question on it's integrity. Thus, an inititative, of switching our voting system on Blockchain must be done by Government.
 In this project we have used Etherem Blockchain to demonstrate the voting procedure.
 
 ## How to Run the Project ?
@@ -47,4 +47,3 @@ npm run dev
 7. You will see a final pop-up button from the metamask where you will be asked to confirm the transaction. You have to click on Confirm and congratulations you have casted your vote.
 --- 
 
-For any queries, ping me here: [sanmol016@gmail.com](mailto:sanmol016@gmail.com)
