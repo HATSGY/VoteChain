@@ -10,7 +10,7 @@ This is a Blockchain-based project, made by me [[Arya Rajesh Mhatre, Pratik Mane
 In this project we have used Etherem Blockchain to demonstrate the voting procedure.
 
 ## How to Run the Project ?
-This is how you can run the project in your machine. Here I have used a linux machine to run the project however if you've a Windows machine you can still read the instruction & try to run them in windows accordingly. Here is a [Youtube-Tutorial-Video](https://www.youtube.com/watch?v=BoH75TkjwHw&feature=youtu.be) for your reference.
+This is how you can run the project in your machine. Here I have used a linux machine to run the project however if you've a Windows machine you can still read the instruction & try to run them in windows accordingly.
 ### Prerequisite
 * [NodeJS](https://nodejs.org/en/download/package-manager/) : Allows JavaScript to run on the server
 * NPM : 
