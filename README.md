@@ -3,11 +3,62 @@
 ![NodeJS](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
 
-<br>A Decentralized e-Voting Portal based on Ethereum Blockchain. 
+# 🗳️ VoteChain — Blockchain Based E-Voting System
 
-## About
-This is a Blockchain-based project, made by me [[Arya Rajesh Mhatre, Pratik Mane, Gajanan More , Pratyush Chaudhari]] as a semester project in A.C. Patil College of Engineering. This projet is entirely based on Ethereum Blockchain with Web3Js to link it with HTML. Blockchain Technology is yet very hard to be hacked [ Until You have committed mistakes in Protocols or Coding Part ] that is what allows implementation of Blockchain in the Voting System. Once Blockchain is introduced in the Voting System, no one can put question on it's integrity. Thus, an inititative, of switching our voting system on Blockchain must be done by Government.
-In this project we have used Etherem Blockchain to demonstrate the voting procedure.
+VoteChain is a decentralized e-voting web application built on the **Ethereum blockchain**. It allows users to cast their vote securely and anonymously without revealing their identity. The integrity of votes is maintained through smart contracts, making it tamper-proof and transparent.
+
+---
+
+## 🔗 Tech Stack
+
+- **Solidity** — Smart Contract
+- **Truffle** — Blockchain Development Framework
+- **Ganache** — Personal Ethereum Blockchain (local)
+- **Web3.js** — Ethereum JavaScript Library
+- **MetaMask** — Browser Wallet Extension
+- **Node.js** — Backend Server
+- **HTML/CSS/JS** — Frontend
+
+---
+
+## ✨ Features
+
+- ✅ Decentralized voting on Ethereum blockchain
+- ✅ One wallet = One vote (no double voting)
+- ✅ Anonymous voting (identity not revealed)
+- ✅ Real-time vote count
+- ✅ OTP-based authentication
+- ✅ NOTA (None of the Above) option included
+- ✅ Transparent and tamper-proof results
+
+---
+
+## 📋 Prerequisites
+
+Make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/)
+- [Truffle](https://trufflesuite.com/) — `npm install -g truffle`
+- [Ganache](https://trufflesuite.com/ganache/) — Local Ethereum blockchain
+- [MetaMask](https://metamask.io/) — Browser extension
+
+---
+
+## 🚀 How to Run Locally
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/HATSGY/VoteChain.git
+cd VoteChain
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Setup environment variables
+Create a `.env` file in the root directory:
 
 ## How to Run the Project ?
 This is how you can run the project in your machine. Here I have used a linux machine to run the project however if you've a Windows machine you can still read the instruction & try to run them in windows accordingly.
